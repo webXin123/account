@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>账单列表</title>
+    <link
+      href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css"
+      rel="stylesheet"
+    />
+    <style>
+      label {
+        font-weight: normal;
+      }
+      .panel-body .glyphicon-remove {
+        display: none;
+      }
+      .panel-body:hover .glyphicon-remove {
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-lg-8 col-lg-offset-2">
+          <div class="row">
+            <h2 class="col-xs-4">记账本</h2>
+            <h2 class="col-xs-6 text-right">
+              <a href="/account/create" class="btn btn-primary">添加账单</a>
+            </h2>
+            <h2 class="col-xs-2 text-right">
+              <form action="/logout" method="post">
+                <button class="btn btn-danger">退出</button>
+              </form>
+            </h2>
+          </div>
+          <hr />
+          <div class="accounts">
+            <% for(let item of accounts) {%>
+            <div
+              class="panel <%= item.type===-1? 'panel-danger' : 'panel-success'%>"
+            >
+              <div class="panel-heading">
+                <%= moment(item.time).format('YYYY-MM-DD') %>
+              </div>
+              <div class="panel-body">
+                <div class="col-xs-6"><%= item.title %></div>
+                <div class="col-xs-2 text-center">
+                  <span
+                    class="label <%= item.type===-1? 'label-warning' : 'label-success'%>"
+                    ><%= item.type===-1 ? '支出' : '收入'%></span
+                  >
+                </div>
+                <div class="col-xs-2 text-right"><%=item.account%>&nbsp;元</div>
+                <div class="col-xs-2 text-right">
+                  <!-- 传递要删除记录的 id -->
+                  <a class="delBtn" href="/account/delete?id=<%= item._id%>"
+                    ><span
+                      class="glyphicon glyphicon-remove"
+                      aria-hidden="true"
+                    ></span
+                  ></a>
+                </div>
+              </div>
+            </div>
+            <% }%>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <!-- 使用 js完善删除操作，防止用户误删除 -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script>
+    let delBtn = $(".delBtn"); // jq选择器返回的是一个jquery对象
+    delBtn.click(function (e) {
+      // 这里不需要对其遍历绑定事件
+      if (confirm("您确定要确认删除吗？")) {
+        // window.confirm()方法返回true(确定)/false(取消)
+        return true;
+      } else {
+        // 阻止a标签的默认行为
+        e.preventDefault();
+      }
+    });
+  </script>
+</html>
